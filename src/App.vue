@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-     <span class="text">ABCDEFG</span>
+     
     <router-view/>
   </div>
 </template>
@@ -20,8 +20,4 @@ document.addEventListener('DOMContentLoaded', ()=>{
 <style lang="stylus" scoped>
   @import './assets/style/global.styl'
 
-  .text
-    font-family 'Days One'
-    color orange
-    font-size px2rem(20)
 </style>
