@@ -9,7 +9,7 @@
 <script>
     import Epub from 'epubjs'
     import {ebookMinx} from "../../utils/mixin";
-    import {getFontFamily, setFontFamily} from "../../utils/localStorage";
+    import {getFontFamily, getFontSize, saveFontSize, setFontFamily} from "../../utils/localStorage";
 
     global.ePub = Epub;
 
@@ -41,6 +41,26 @@
                 this.setSettingVisible(-1);
                 this.setFontFamilyVisible(false);
             },
+            initFontSize(){
+                //  设置字体大小
+                let fontSize = getFontSize(this.fileName);
+                if (!fontSize) {
+                    saveFontSize(this.fileName, this.defaultFontSize);
+                }else {
+                    this.rendition.themes.fontSize(fontSize);
+                    this.setDefaultFontSize(fontSize);
+                }
+            },
+            initFontFamily() {
+                //设置字体
+                let font = getFontFamily(this.fileName);
+                if (!font) {
+                    setFontFamily(this.fileName, this.defaultFontFamily);
+                }else {
+                    this.rendition.themes.font(font);
+                    this.setDefaultFontFamily(font);
+                }
+            },
             initEpub() {
                 const url = 'http://localhost:8081/epub/' + this.fileName + '.epub';
                 this.book = new Epub(url);
@@ -52,15 +72,9 @@
                 });
 
                 //展示
-                //设置字体
                 this.rendition.display().then(()=>{
-                    let font = getFontFamily(this.fileName);
-                    if (!font) {
-                        setFontFamily(this.fileName, this.defaultFontFamily);
-                    }else {
-                        this.rendition.themes.font(font);
-                        this.setDefaultFontFamily(font);
-                    }
+                    this.initFontSize();
+                    this.initFontFamily();
                 });
 
 
