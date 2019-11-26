@@ -9,6 +9,7 @@
 <script>
     import Epub from 'epubjs'
     import {ebookMinx} from "../../utils/mixin";
+    import {getFontFamily, setFontFamily} from "../../utils/localStorage";
 
     global.ePub = Epub;
 
@@ -51,7 +52,17 @@
                 });
 
                 //展示
-                this.rendition.display();
+                //设置字体
+                this.rendition.display().then(()=>{
+                    let font = getFontFamily(this.fileName);
+                    if (!font) {
+                        setFontFamily(this.fileName, this.defaultFontFamily);
+                    }else {
+                        this.rendition.themes.font(font);
+                        this.setDefaultFontFamily(font);
+                    }
+                });
+
 
                 //触摸操作
                 this.rendition.on('touchstart', event => {
