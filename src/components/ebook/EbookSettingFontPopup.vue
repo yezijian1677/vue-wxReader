@@ -38,8 +38,12 @@
       },
       setFontFamily(font) {
         this.setDefaultFontFamily(font);
-        this.currentBook.rendition.themes.font(font);
-        this.setFontFamilyVisible(false);
+        if (font === 'Default') {
+          this.currentBook.rendition.themes.font("Times New Roman");
+        }else {
+          this.currentBook.rendition.themes.font(font);
+          this.setFontFamilyVisible(false);
+        }
       },
       hide() {
         this.setFontFamilyVisible(false)
