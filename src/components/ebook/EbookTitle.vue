@@ -20,52 +20,51 @@
 </template>
 
 <script>
-    import {ebookMinx} from "../../utils/mixin";
+    import { ebookMinx } from '../../utils/mixin'
 
     export default {
         mixins: [ebookMinx],
-        name: "EbookTitle",
-        props: {
-            ifTitleAndMenuShow: {
-                type: Boolean,
-                default: true
-            }
-        },
-        methods:{
-            back(){
-                console.log("back");
-
+        methods: {
+            back() {
+                console.log('back')
             }
         }
     }
 </script>
 
-<style lang="stylus" scoped>
-    @import '../../assets/style/global.styl';
-    .title-wrapper
+<style lang="scss" rel="stylesheet/scss" scoped>
+    @import "../../assets/styles/global";
+
+    .title-wrapper {
         position: absolute;
         top: 0;
         left: 0;
-        z-index: 101;
+        z-index: 210;
         display: flex;
         width: 100%;
         height: px2rem(48);
         background: white;
         box-shadow: 0 px2rem(8) px2rem(8) rgba(0, 0, 0, .15);
-        font-size px2rem(20)
-        .left
+        font-size: px2rem(20);
+        .left {
             flex: 0 0 px2rem(60);
-            center();
-        .right
+            @include left;
+            margin-left: px2rem(15);
+        }
+        .right {
             flex: 1;
             display: flex;
             justify-content: flex-end;
-            .icon-wrapper
+            .icon-wrapper {
                 flex: 0 0 px2rem(40);
-                center();
-                .icon-shelf
+                @include center;
+                .icon-shelf {
                     font-size: px2rem(22);
-                .icon-cart
-                    font-size px2rem(22)
-
+                }
+                .icon-cart {
+                    font-size: px2rem(22);
+                }
+            }
+        }
+    }
 </style>

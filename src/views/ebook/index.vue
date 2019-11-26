@@ -21,7 +21,14 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-  @import '../../assets/style/global.styl'
+<style lang="scss" rel="stylesheet/scss" scoped>
+  @import "../../assets/styles/global";
 
+  .ebook {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 </style>
