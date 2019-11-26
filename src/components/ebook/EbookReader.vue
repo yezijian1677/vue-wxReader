@@ -9,7 +9,14 @@
 <script>
     import Epub from 'epubjs'
     import {ebookMinx} from "../../utils/mixin";
-    import {getFontFamily, getFontSize, saveFontSize, setFontFamily} from "../../utils/localStorage";
+    import {
+        getFontFamily,
+        getFontSize,
+        getTheme,
+        saveFontSize,
+        saveTheme,
+        setFontFamily
+    } from "../../utils/localStorage";
 
     global.ePub = Epub;
 
@@ -40,6 +47,20 @@
                 this.setMenuVisible(false);
                 this.setSettingVisible(-1);
                 this.setFontFamilyVisible(false);
+            },
+            initTheme(){
+                //判断是否有默认主题
+                let defaultTheme = getTheme(this.fileName);
+                //如果没有则保存现在的主题为默认
+                if (!defaultTheme) {
+                    defaultTheme = this.themeList[0].name;
+                    this.setDefaultTheme(defaultTheme);
+                    saveTheme(this.fileName, defaultTheme);
+                }
+                this.themeList.forEach(theme => {
+                    this.rendition.themes.register(theme.name, theme.style);
+                });
+                this.rendition.themes.select(defaultTheme);
             },
             initFontSize(){
                 //  设置字体大小
@@ -73,6 +94,7 @@
 
                 //展示
                 this.rendition.display().then(()=>{
+                    this.initTheme();
                     this.initFontSize();
                     this.initFontFamily();
                 });

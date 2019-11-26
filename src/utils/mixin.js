@@ -1,4 +1,5 @@
 import {mapGetters, mapActions} from "vuex";
+import {themeList} from "./book";
 
 
 export const ebookMinx = {
@@ -23,7 +24,10 @@ export const ebookMinx = {
             'pagelist',
             'offsetY',
             'isBookmark'
-        ])
+        ]),
+        themeList(){
+            return themeList(this);
+        }
     },
     methods:{
         ...mapActions([
