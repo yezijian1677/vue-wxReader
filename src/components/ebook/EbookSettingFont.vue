@@ -43,7 +43,8 @@
     },
     methods: {
       setFontSize(fontSize) {
-        this.setDefaultFontSize(fontSize)
+        this.setDefaultFontSize(fontSize);
+        this.currentBook.rendition.themes.fontSize(fontSize);
       },
       showFontFamilyPopup() {
         this.setFontFamilyVisible(true)

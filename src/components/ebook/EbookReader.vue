@@ -29,14 +29,21 @@
                 }
             },
             toggleTitleAndMenu() {
+                if (this.menuVisible) {
+                    this.setSettingVisible(-1);
+                    this.setFontFamilyVisible(false);
+                }
                 this.setMenuVisible(!this.menuVisible);
             },
             hideTitleAndMenu() {
                 this.setMenuVisible(false);
+                this.setSettingVisible(-1);
+                this.setFontFamilyVisible(false);
             },
             initEpub() {
                 const url = 'http://localhost:8081/epub/' + this.fileName + '.epub';
                 this.book = new Epub(url);
+                this.setCurrentBook(this.book);
                 this.rendition = this.book.renderTo('read', {
                     width: innerWidth,
                     height: innerHeight,
@@ -73,7 +80,7 @@
         },
         mounted() {
             const fileName = this.$route.params.fileName.split('|').join('/');
-            console.log(fileName);
+            // console.log(fileName);
             this.setFileName(fileName).then(() => {
                 this.initEpub()
             });
