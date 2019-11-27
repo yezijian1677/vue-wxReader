@@ -4,7 +4,7 @@
             <div class="setting-progress">
                 <div class="read-time-wrapper">
                     <span class="read-time-text">111</span>
-<!--                    <span class="read-time-text">{{getReadTimeText()}}</span>-->
+                    <!--                    <span class="read-time-text">{{getReadTimeText()}}</span>-->
                     <span class="icon-forward"></span>
                 </div>
                 <div class="progress-wrapper">
@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="text-wrapper">
-<!--                    <span class="progress-section-text">{{getSectionName}}</span>-->
+                    <span class="progress-section-text">{{getSectionName}}</span>
                     <span>{{bookAvailable ? progress + '%' : '加载中...'}}</span>
                 </div>
             </div>
@@ -39,6 +39,16 @@
     export default {
         name: "EbookSettingProgress",
         mixins: [ebookMinx],
+        computed: {
+            getSectionName() {
+                if (this.section) {
+                    const sectionInfo = this.currentBook.section(this.section);
+                    if (sectionInfo && sectionInfo.href) {
+                        return this.currentBook.navigation.get(sectionInfo.href).label;
+                    }
+                }
+            }
+        },
         methods: {
             onProgressChange(progress) {
                 this.setProgress(progress).then(() => {
@@ -53,17 +63,32 @@
             displayProgress() {
                 const cfi = this.currentBook.locations.cfiFromPercentage(this.progress / 100);
                 // console.log(cfi);
-                this.currentBook.rendition.display(cfi);
+                this.display(cfi);
             },
             updateProgressBg() {
                 this.$refs.progress.style.backgroundSize = `${this.progress}% 100%`;
             },
             prevSection() {
-
+                if (this.section > 0 && this.bookAvailable) {
+                    this.setSection(this.section - 1).then(() => {
+                        this.displaySection();
+                    })
+                }
             },
             nextSection() {
+                if (this.section < this.currentBook.spine.length - 1 && this.bookAvailable) {
+                    this.setSection(this.section + 1).then(() => {
+                        this.displaySection();
+                    })
+                }
+            },
+            displaySection() {
+                const sectionInfo = this.currentBook.section(this.section);
+                if (sectionInfo && sectionInfo.href) {
+                    this.display(sectionInfo.href)
+                }
+            },
 
-            }
         },
 
         updated() {
@@ -84,10 +109,12 @@
         height: px2rem(90);
         background: white;
         box-shadow: 0 px2rem(-8) px2rem(8) rgba(0, 0, 0, .15);
+
         .setting-progress {
             position: relative;
             width: 100%;
             height: 100%;
+
             .read-time-wrapper {
                 position: absolute;
                 left: 0;
@@ -97,23 +124,28 @@
                 font-size: px2rem(12);
                 @include center;
             }
+
             .progress-wrapper {
                 width: 100%;
                 height: 100%;
                 @include center;
                 padding: 0 px2rem(15);
                 box-sizing: border-box;
+
                 .progress-icon-wrapper {
                     font-size: px2rem(20);
                 }
+
                 .progress {
                     width: 100%;
                     -webkit-appearance: none;
                     height: px2rem(2);
                     margin: 0 px2rem(10);
+
                     &:focus {
                         outline: none;
                     }
+
                     &::-webkit-slider-thumb {
                         -webkit-appearance: none;
                         height: px2rem(20);
@@ -125,6 +157,7 @@
                     }
                 }
             }
+
             .text-wrapper {
                 position: absolute;
                 left: 0;
@@ -135,6 +168,7 @@
                 padding: 0 px2rem(15);
                 box-sizing: border-box;
                 @include center;
+
                 .progress-section-text {
                     @include ellipsis;
                 }

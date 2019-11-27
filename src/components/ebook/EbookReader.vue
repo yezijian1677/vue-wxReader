@@ -15,7 +15,8 @@
         getTheme,
         saveFontSize,
         saveTheme,
-        setFontFamily
+        setFontFamily,
+        getLocation
     } from "../../utils/localStorage";
 
     global.ePub = Epub;
@@ -26,14 +27,20 @@
         methods: {
             prevPage() {
                 if (this.rendition) {
-                    this.rendition.prev();
+                    this.rendition.prev().then(()=>{
+                        this.refreshLocation();
+                    });
                     this.hideTitleAndMenu();
                 }
             },
             nextPage() {
                 if (this.rendition) {
-                    this.rendition.next();
+                    this.rendition.next().then(()=>{
+                        this.refreshLocation();
+                    });
                     this.hideTitleAndMenu();
+
+
                 }
             },
             toggleTitleAndMenu() {
@@ -88,15 +95,14 @@
                     height: innerHeight,
                     method: 'default'
                 });
-
-                //展示
-                this.rendition.display().then(()=>{
+                const location = getLocation(this.fileName);
+                this.display(location, ()=>{
                     this.initTheme();
                     this.initFontSize();
                     this.initFontFamily();
                     this.initGlobalStyle();
-
                 });
+
                 //修改字体文件
                 this.rendition.hooks.content.register(contents => {
                     Promise.all(
@@ -134,6 +140,7 @@
 
                 });
             },
+
             initEpub() {
                 const url = `${process.env.VUE_APP_BOOK_URL}/`+ this.fileName + '.epub';
                 this.book = new Epub(url);
@@ -146,6 +153,7 @@
                 }).then(locations => {
                     // console.log(locations)
                     this.setBookAvailable(true);
+                    this.refreshLocation();
                 });
             }
         },

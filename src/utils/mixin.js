@@ -1,5 +1,6 @@
 import {mapGetters, mapActions} from "vuex";
 import {addCss, removeAllCss, themeList} from "./book";
+import {saveLocation} from "./localStorage";
 
 
 export const ebookMinx = {
@@ -72,6 +73,31 @@ export const ebookMinx = {
                 default:
                     addCss(`${process.env.VUE_APP_THEME_URL}/theme_default.css`);
                     break;
+            }
+        },
+        //刷新进度
+        refreshLocation() {
+            //获取此书的当前位置
+            const currentLocation = this.currentBook.rendition.currentLocation();
+            const startCfi = currentLocation.start.cfi;
+            //使用当前位置的cfi计算百分比
+            const progress = this.currentBook.locations.percentageFromCfi(startCfi);
+            this.setProgress(Math.floor(progress * 100));
+            this.setSection(currentLocation.start.index);
+            saveLocation(this.fileName, startCfi);
+        },
+
+        display(target, cb){
+            if (target) {
+                this.currentBook.rendition.display(target).then(()=>{
+                    this.refreshLocation();
+                    if (cb) cb();
+                });
+            }else {
+                this.currentBook.rendition.display().then(()=>{
+                    this.refreshLocation();
+                    if (cb) cb();
+                });
             }
         }
     }
