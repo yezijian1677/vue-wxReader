@@ -82,10 +82,7 @@
                     this.setDefaultFontFamily(font);
                 }
             },
-            initEpub() {
-                const url = `${process.env.VUE_APP_BOOK_URL}/`+ this.fileName + '.epub';
-                this.book = new Epub(url);
-                this.setCurrentBook(this.book);
+            initRendition() {
                 this.rendition = this.book.renderTo('read', {
                     width: innerWidth,
                     height: innerHeight,
@@ -100,8 +97,20 @@
                     this.initGlobalStyle();
 
                 });
+                //修改字体文件
+                this.rendition.hooks.content.register(contents => {
+                    Promise.all(
+                        [
+                            contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/daysOne.css`),
+                            contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/cabin.css`),
+                            contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/montserrat.css`),
+                            contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/tangerine.css`)
+                        ]
+                    ).then(()=>{})
 
-
+                })
+            },
+            initGesture() {
                 //触摸操作
                 this.rendition.on('touchstart', event => {
                     this.touchStartX = event.changedTouches[0].clientX;
@@ -124,18 +133,20 @@
                     }
 
                 });
-                //修改字体文件
-                this.rendition.hooks.content.register(contents => {
-                    Promise.all(
-                        [
-                            contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/daysOne.css`),
-                            contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/cabin.css`),
-                            contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/montserrat.css`),
-                            contents.addStylesheet(`${process.env.VUE_APP_RES_URL}/fonts/tangerine.css`)
-                        ]
-                    ).then(()=>{})
-
-                })
+            },
+            initEpub() {
+                const url = `${process.env.VUE_APP_BOOK_URL}/`+ this.fileName + '.epub';
+                this.book = new Epub(url);
+                this.setCurrentBook(this.book);
+                this.initRendition();
+                this.initGesture();
+                this.book.ready.then(() => {
+                    //默认显示的字数
+                    return this.book.locations.generate(750 * (window.innerWidth / 375) * (getFontSize(this.fileName / 16)));
+                }).then(locations => {
+                    // console.log(locations)
+                    this.setBookAvailable(true);
+                });
             }
         },
         mounted() {
