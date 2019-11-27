@@ -24,7 +24,7 @@
                 const theme = this.themeList[index];
                 this.setDefaultTheme(theme.name).then(() => {
                     this.currentBook.rendition.themes.select(this.defaultTheme);
-                    // this.initGlobalStyle()
+                    this.initGlobalStyle()
                 });
                 //切换主题的时候保存主题
                 saveTheme(this.fileName, theme.name)

@@ -54,9 +54,9 @@
                 //如果没有则保存现在的主题为默认
                 if (!defaultTheme) {
                     defaultTheme = this.themeList[0].name;
-                    this.setDefaultTheme(defaultTheme);
                     saveTheme(this.fileName, defaultTheme);
                 }
+                this.setDefaultTheme(defaultTheme);
                 this.themeList.forEach(theme => {
                     this.rendition.themes.register(theme.name, theme.style);
                 });
@@ -83,7 +83,7 @@
                 }
             },
             initEpub() {
-                const url = 'http://localhost:8081/epub/' + this.fileName + '.epub';
+                const url = `${process.env.VUE_APP_BOOK_URL}/`+ this.fileName + '.epub';
                 this.book = new Epub(url);
                 this.setCurrentBook(this.book);
                 this.rendition = this.book.renderTo('read', {
@@ -97,6 +97,8 @@
                     this.initTheme();
                     this.initFontSize();
                     this.initFontFamily();
+                    this.initGlobalStyle();
+
                 });
 
 
