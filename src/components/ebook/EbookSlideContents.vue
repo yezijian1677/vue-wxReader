@@ -8,26 +8,25 @@
                 <input type="text" class="slide-contents-search-input" @click="showSearchPage" :placeholder="$t('book.searchHint')">
                 <div class="slide-contents-search-cancel" v-if="searchVisible" @click="hideSearchPage">{{$t('book.cancel')}}</div>
             </div>
-
-            <div class="slide-contents-book-wrapper" v-show="!searchVisible">
-                <div class="slide-contents-book-img-wrapper">
-                    <img :src="cover" class="slide-contents-book-img">
+        </div>
+        <div class="slide-contents-book-wrapper" v-show="!searchVisible">
+            <div class="slide-contents-book-img-wrapper">
+                <img :src="cover" class="slide-contents-book-img">
+            </div>
+            <div class="slide-contents-book-info-wrapper">
+                <div class="slide-contents-book-title">
+                    <span class="slide-contents-book-title-text">{{metadata.title}}</span>
                 </div>
-                <div class="slide-contents-book-info-wrapper">
-<!--                    <div class="slide-contents-book-title">-->
-<!--                        <span class="slide-contents-book-title-text">{{metadata.title}}</span>-->
-<!--                    </div>-->
-<!--                    <div class="slide-contents-book-author">-->
-<!--                        <span class="slide-contents-book-author-text">{{metadata.creator}}</span>-->
-<!--                    </div>-->
+                <div class="slide-contents-book-author">
+                    <span class="slide-contents-book-author-text">{{metadata.creator}}</span>
                 </div>
-                <div class="slide-contents-book-progress-wrapper">
-                    <div class="slide-contents-book-progress">
-                        <span class="progress">{{progress + '%'}}</span>
-                        <span class="progress-text">{{$t('book.haveRead2')}}</span>
-                    </div>
-                    <div class="slide-contents-book-time">{{getReadTimeText()}}</div>
+            </div>
+            <div class="slide-contents-book-progress-wrapper">
+                <div class="slide-contents-book-progress">
+                    <span class="progress">{{progress + '%'}}</span>
+                    <span class="progress-text">{{$t('book.haveRead2')}}</span>
                 </div>
+                <div class="slide-contents-book-time">{{getReadTimeText()}}</div>
             </div>
         </div>
     </div>

@@ -141,6 +141,9 @@
                     this.book.archive.createUrl(cover).then(url => {
                         this.setCover(url);
                     })
+                });
+                this.book.loaded.metadata.then(metadata => {
+                    this.setMetadata(metadata);
                 })
             },
 
