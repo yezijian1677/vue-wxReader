@@ -29,14 +29,25 @@
                 <div class="slide-contents-book-time">{{getReadTimeText()}}</div>
             </div>
         </div>
+        <scroll class="slide-contents-list" ref="scroll"
+            :top="156" :bottom="48"
+        >
+            <div class="slide-contents-item" v-for="(item ,index) in navigation">
+                <span class="slide-contents-item-label" @click="display(item.href)" :class="{'selected': section === index}" :style="contentItemStyle(item)" :key="index">{{item.label}}</span>
+                <span class="slide-contents-item-page"></span>
+            </div>
+        </scroll>
     </div>
 </template>
 
 <script>
     import {ebookMinx} from "../../utils/mixin";
+    import Scroll from "../common/Scroll";
+    import {px2rem} from "../../utils/utils";
 
     export default {
         name: "EbookSlideContents",
+        components: {Scroll},
         mixins: [ebookMinx],
         data(){
             return{
@@ -44,6 +55,15 @@
             }
         },
         methods:{
+            displayNavigation(target) {
+                this.display(target, ()=>{ this.hideTitleAndMenu()})
+
+            },
+            contentItemStyle(item) {
+                return{
+                    marginLeft: `${px2rem(item.level * 15)}rem`
+                }
+            },
             showSearchPage(){
                 this.searchVisible = true;
             },

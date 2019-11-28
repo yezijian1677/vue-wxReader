@@ -79,12 +79,14 @@ export const ebookMinx = {
         refreshLocation() {
             //获取此书的当前位置
             const currentLocation = this.currentBook.rendition.currentLocation();
-            const startCfi = currentLocation.start.cfi;
-            //使用当前位置的cfi计算百分比
-            const progress = this.currentBook.locations.percentageFromCfi(startCfi);
-            this.setProgress(Math.floor(progress * 100));
-            this.setSection(currentLocation.start.index);
-            saveLocation(this.fileName, startCfi);
+            if (currentLocation && currentLocation.start) {
+                const startCfi = currentLocation.start.cfi;
+                //使用当前位置的cfi计算百分比
+                const progress = this.currentBook.locations.percentageFromCfi(startCfi);
+                this.setProgress(Math.floor(progress * 100));
+                this.setSection(currentLocation.start.index);
+                saveLocation(this.fileName, startCfi);
+            }
         },
 
         display(target, cb){
