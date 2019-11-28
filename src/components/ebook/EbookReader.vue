@@ -50,11 +50,6 @@
                 }
                 this.setMenuVisible(!this.menuVisible);
             },
-            hideTitleAndMenu() {
-                this.setMenuVisible(false);
-                this.setSettingVisible(-1);
-                this.setFontFamilyVisible(false);
-            },
             initTheme(){
                 //判断是否有默认主题
                 let defaultTheme = getTheme(this.fileName);
@@ -141,12 +136,21 @@
                 });
             },
 
+            parseBook(){
+                this.book.loaded.cover.then(cover=>{
+                    this.book.archive.createUrl(cover).then(url => {
+                        this.setCover(url);
+                    })
+                })
+            },
+
             initEpub() {
                 const url = `${process.env.VUE_APP_BOOK_URL}/`+ this.fileName + '.epub';
                 this.book = new Epub(url);
                 this.setCurrentBook(this.book);
                 this.initRendition();
                 this.initGesture();
+                this.parseBook();
                 this.book.ready.then(() => {
                     //默认显示的字数
                     return this.book.locations.generate(750 * (window.innerWidth / 375) * (getFontSize(this.fileName / 16)));

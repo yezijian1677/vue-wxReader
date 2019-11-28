@@ -1,5 +1,5 @@
 import {mapGetters, mapActions} from "vuex";
-import {addCss, removeAllCss, themeList} from "./book";
+import {addCss, removeAllCss, themeList, getReadTimeByMinute} from "./book";
 import {saveLocation} from "./localStorage";
 
 
@@ -99,6 +99,17 @@ export const ebookMinx = {
                     if (cb) cb();
                 });
             }
-        }
+        },
+        //隐藏
+        hideTitleAndMenu() {
+            this.setMenuVisible(false);
+            this.setSettingVisible(-1);
+            this.setFontFamilyVisible(false);
+        },
+        //获取读书时间
+        getReadTimeText() {
+            return this.$t('book.haveRead').replace('$1', getReadTimeByMinute(this.fileName));
+        },
+
     }
 };

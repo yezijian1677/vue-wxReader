@@ -1,3 +1,5 @@
+import {getReadTime} from "./localStorage";
+
 export const FONT_SIZE_LIST = [
     { fontSize: 12 },
     { fontSize: 14 },
@@ -95,4 +97,12 @@ export function removeAllCss() {
     removeCss(`${process.env.VUE_APP_THEME_URL}/theme_gold.css`);
     removeCss(`${process.env.VUE_APP_THEME_URL}/theme_night.css`);
 
+}
+export function getReadTimeByMinute(fileName) {
+    const readTime = getReadTime(fileName);
+    if (!readTime) {
+        return 0;
+    }else {
+        return Math.ceil(readTime / 60);
+    }
 }
