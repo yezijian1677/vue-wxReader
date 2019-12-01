@@ -3,10 +3,18 @@
         <div class="slide-contents-search-wrapper">
             <div class="slide-contents-search-input-wrapper">
                 <div class="slide-contents-search-icon">
-                    <span class="icon-search"/>
+                    <span class="icon-search"></span>
                 </div>
-                <input type="text" class="slide-contents-search-input" @click="showSearchPage" :placeholder="$t('book.searchHint')">
-                <div class="slide-contents-search-cancel" v-if="searchVisible" @click="hideSearchPage">{{$t('book.cancel')}}</div>
+                <input class="slide-contents-search-input"
+                       type="text"
+                       v-model="searchText"
+                       :placeholder="$t('book.searchHint')"
+                       @keyup.enter.exact="search()"
+                       @click="showSearchPage">
+            </div>
+            <div class="slide-contents-search-cancel"
+                 v-if="searchVisible"
+                 @click="hideSearchPage()">{{$t('book.cancel')}}
             </div>
         </div>
         <div class="slide-contents-book-wrapper" v-show="!searchVisible">
@@ -29,52 +37,90 @@
                 <div class="slide-contents-book-time">{{getReadTimeText()}}</div>
             </div>
         </div>
-        <scroll class="slide-contents-list" ref="scroll"
-            :top="156" :bottom="48"
-        >
-            <div class="slide-contents-item" v-for="(item ,index) in navigation">
-                <span class="slide-contents-item-label" @click="display(item.href)" :class="{'selected': section === index}" :style="contentItemStyle(item)" :key="index">{{item.label}}</span>
-                <span class="slide-contents-item-page"></span>
+        <scroll class="slide-contents-list"
+                :top="156"
+                :bottom="48"
+                v-show="!searchVisible">
+            <div class="slide-contents-item" v-for="(item, index) in navigation" :key="index">
+        <span class="slide-contents-item-label" :class="{'selected': section === index}" :style="contentItemStyle(item)"
+              @click="displayContent(item.href)">{{item.label}}</span>
+                <span class="slide-contents-item-page">{{item.page}}</span>
             </div>
+        </scroll>
+        <scroll class="slide-search-list"
+                :top="66"
+                :bottom="48"
+                v-show="searchVisible">
+            <div class="slide-search-item"
+                 v-for="(item, index) in searchList"
+                 :key="index"
+                 v-html="item.excerpt"
+                 @click="displayContent(item.cfi, true)"></div>
         </scroll>
     </div>
 </template>
 
 <script>
-    import {ebookMinx} from "../../utils/mixin";
-    import Scroll from "../common/Scroll";
-    import {px2rem} from "../../utils/utils";
+    import { ebookMinx } from '../../utils/mixin'
+    import Scroll from '../common/Scroll'
+    import { px2rem } from '../../utils/utils'
 
     export default {
-        name: "EbookSlideContents",
-        components: {Scroll},
         mixins: [ebookMinx],
-        data(){
-            return{
-                searchVisible: false
+        components: {
+            Scroll
+        },
+        data() {
+            return {
+                searchVisible: false,
+                searchList: null,
+                searchText: ''
             }
         },
-        methods:{
-            displayNavigation(target) {
-                this.display(target, ()=>{ this.hideTitleAndMenu()})
-
+        methods: {
+            search() {
+                if (this.searchText && this.searchText.length > 0) {
+                    this.doSearch(this.searchText).then(list => {
+                        this.searchList = list
+                        this.searchList.map(item => {
+                            item.excerpt = item.excerpt.replace(this.searchText, `<span class="content-search-text">${this.searchText}</span>`)
+                            return item
+                        })
+                    })
+                }
+            },
+            doSearch(q) {
+                return Promise.all(
+                    this.currentBook.spine.spineItems.map(
+                        section => section.load(this.currentBook.load.bind(this.currentBook))
+                            .then(section.find.bind(section, q))
+                            .finally(section.unload.bind(section)))
+                ).then(results => Promise.resolve([].concat.apply([], results)))
+            },
+            displayContent(target, highlight = false) {
+                this.display(target, () => {
+                    this.hideTitleAndMenu()
+                    if (highlight) {
+                        this.currentBook.rendition.annotations.highlight(target)
+                    }
+                })
             },
             contentItemStyle(item) {
-                return{
+                return {
                     marginLeft: `${px2rem(item.level * 15)}rem`
                 }
             },
-            showSearchPage(){
-                this.searchVisible = true;
+            showSearchPage() {
+                this.searchVisible = true
             },
-            hideSearchPage(){
-                this.searchVisible = false;
-            },
-
+            hideSearchPage() {
+                this.searchVisible = false
+                this.searchText = ''
+                this.searchList = null
+            }
         }
     }
 </script>
-
 
 <style lang="scss" rel="stylesheet/scss" scoped>
     @import "../../assets/styles/global";
@@ -205,4 +251,3 @@
         }
     }
 </style>
-
