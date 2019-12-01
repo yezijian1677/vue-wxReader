@@ -7,23 +7,52 @@
             <div class="ebook-bookmark-text">{{text}}</div>
         </div>
         <div class="ebook-bookmark-icon-wrapper">
-<!--            <bookmark :color="color" :width="15" :height="35"></bookmark>-->
+            <div class="icon"></div>
+            <bookmark :color="color" :width="15" :height="35"/>
         </div>
     </div>
 </template>
 
 <script>
+    import Bookmark from "../common/Bookmark";
     import { realPx } from '../../utils/utils'
-    import { ebookMixin } from '../../utils/mixin'
+    import { ebookMinx } from '../../utils/mixin'
     import { getBookmark, saveBookmark } from '../../utils/localStorage'
 
     const BLUE = '#346cbc';
     const WHITE = '#fff';
     export default {
         name: 'EbookBookmark',
+        mixins: [ebookMinx],
+        components:{
+          Bookmark
+        },
+        computed:{
+            height() {
+                return realPx(35);
+            },
+            threshold() {
+                return realPx(55);
+            }
+        },
+        watch: {
+            offsetY(v){
+                if (v >= this.height && v <= this.threshold) {
+                    this.$refs.bookmark.style.top = `${-v}px`;
+                    this.text = this.$t('book.pulldownAddMark');
+                    this.color = WHITE;
+                }else if (v >= this.threshold) {
+                    //超越临界状态
+                    this.$refs.bookmark.style.top = `${-v}px`;
+                    this.text = this.$t('book.releaseAddMark');
+                    this.color = BLUE;
+                }
+            }
+        },
         data() {
             return{
-                text: this.$t('book.pulldownAddMark')
+                text: '',
+                color: WHITE,
             }
         }
     }

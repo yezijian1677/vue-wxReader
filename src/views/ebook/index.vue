@@ -33,10 +33,12 @@
         },
         watch: {
             offsetY(v) {
-                if (v > 0) {
-                    this.move(v);
-                } else if (v === 0) {
-                    this.restore();
+                if (!this.menuVisible && this.bookAvailable) {
+                    if (v > 0) {
+                        this.move(v);
+                    } else if (v === 0) {
+                        this.restore();
+                    }
                 }
             }
         },
