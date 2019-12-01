@@ -28,6 +28,9 @@ export const ebookMinx = {
         ]),
         themeList(){
             return themeList(this);
+        },
+        getSectionName() {
+            return this.section ? this.navigation[this.section].label : ''
         }
     },
     methods:{

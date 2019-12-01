@@ -19,6 +19,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
 <style lang="scss" scoped>
   #app {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    border: 0;
+    z-index: 0;
     width: 100%;
     height: 100%;
     background: #7d8188;
